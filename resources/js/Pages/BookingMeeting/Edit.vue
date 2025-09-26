@@ -1,8 +1,16 @@
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
-import { Building, SquarePlus, Repeat2, Trash } from "lucide-vue-next";
+import { Building, SquarePlus, Repeat2, Trash, Check, ChevronDown } from "lucide-vue-next";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxOptions,
+  ComboboxOption,
+  ComboboxButton,
+  TransitionRoot,
+} from "@headlessui/vue";
 import axios from "axios";
 
 // Props dari controller
@@ -127,6 +135,16 @@ const chooseRoom = () => {
   openModal.value = false;
 };
 
+// Combobox Meeting With
+const query = ref("");
+const filteredEmployees = computed(() =>
+  query.value === ""
+    ? props.employees
+    : props.employees.filter((e) =>
+        e.name.toLowerCase().includes(query.value.toLowerCase())
+      )
+);
+
 // Submit form update
 const updateBooking = () => {
   form.put(route("bookingmeeting.update", props.booking.id), {
@@ -171,7 +189,6 @@ const updateBooking = () => {
                     <p class="border rounded p-2 bg-white">{{ form.duration ? form.duration + " Minute" : "-" }}</p>
                   </div>
                 </div>
-                <!-- <label class="block text-sm font-medium mb-1">Pilih Ruangan</label> -->
                 <button type="button" class="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded mb-3" @click="openModal = true">
                   <Building class="w-5 h-5" />
                   Select Room
@@ -192,8 +209,6 @@ const updateBooking = () => {
                     :readonly="!differentCompany && form.visitors.length > 1"
                   />
                 </div>
-
-                
                 <div class="flex justify-end">
                   <button type="button" class="flex items-center justify-center gap-2 mt-4 bg-red-500 text-white px-3 py-1 rounded" @click="removeVisitors(index)" v-if="form.visitors.length > 1">
                     <Trash class="w-5 h-5" />
@@ -204,14 +219,8 @@ const updateBooking = () => {
 
               <!-- Toggle perusahaan berbeda -->
               <div class="flex items-center space-x-2">
-                <label class="font-medium"
-                  >Visitors from different companies?</label
-                >
-                <input
-                  type="checkbox"
-                  v-model="differentCompany"
-                  class="form-checkbox"
-                />
+                <label class="font-medium">Visitors from different companies?</label>
+                <input type="checkbox" v-model="differentCompany" class="form-checkbox"/>
               </div>
 
               <button type="button" class="w-full flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded mb-4" @click="addVisitors">
@@ -228,18 +237,67 @@ const updateBooking = () => {
               <!-- Meeting With -->
               <div>
                 <label class="block text-sm font-medium mb-1">Meeting With</label>
-                  <input
-                    v-if="userRole === 'employee'"
-                    type="text"
-                    :value="userName"
-                    class="border rounded w-full p-2 bg-gray-100"
-                    readonly
-                  />
+                <input
+                  v-if="userRole === 'employee'"
+                  type="text"
+                  :value="userName"
+                  class="border rounded w-full p-2 bg-gray-100"
+                  readonly
+                />
 
-                <select v-else v-model="form.meeting_with" class="border rounded w-full p-2">
-                  <option disabled value="">-- Select Employee --</option>
-                  <option v-for="emp in props.employees" :key="emp.id" :value="emp.id">{{ emp.name }}</option>
-                </select>
+                <Combobox v-else v-model="form.meeting_with">
+                  <div class="relative">
+                    <div class="relative w-full cursor-default overflow-hidden rounded-lg border bg-white text-left">
+                      <ComboboxInput
+                        class="w-full border-none py-2 pl-3 pr-10 leading-5 text-gray-900 focus:ring-0"
+                        placeholder="Search employee..."
+                        @change="query = $event.target.value"
+                        :displayValue="id => props.employees.find(e => e.id === id)?.name || ''"
+                      />
+                      <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
+                        <ChevronDown class="h-5 w-5 text-black" />
+                      </ComboboxButton>
+                    </div>
+                    <TransitionRoot
+                      leave="transition ease-in duration-100"
+                      leave-from="opacity-100"
+                      leave-to="opacity-0"
+                      @after-leave="query = ''"
+                    >
+                      <ComboboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm z-10">
+                        <ComboboxOption
+                          v-for="emp in filteredEmployees"
+                          :key="emp.id"
+                          :value="emp.id"
+                          as="template"
+                          v-slot="{ active, selected }"
+                        >
+                          <li
+                            :class="[
+                              'relative cursor-default select-none py-2 pl-10 pr-4',
+                              active ? 'bg-blue-600 text-white' : 'text-gray-900',
+                            ]"
+                          >
+                            <span
+                              :class="[
+                                'block truncate',
+                                selected ? 'font-medium' : 'font-normal',
+                              ]"
+                            >
+                              {{ emp.name }}
+                            </span>
+                            <span
+                              v-if="selected"
+                              class="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600"
+                            >
+                              <Check class="h-5 w-5" />
+                            </span>
+                          </li>
+                        </ComboboxOption>
+                      </ComboboxOptions>
+                    </TransitionRoot>
+                  </div>
+                </Combobox>
               </div>
 
               <button type="submit" class="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">

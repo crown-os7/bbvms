@@ -1,25 +1,52 @@
 <script setup>
 import GuestLayout from "@/Layouts/GuestLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, Link } from "@inertiajs/vue3";
 </script>
 
 <template>
   <Head title="Home" />
   <GuestLayout>
-    <!-- CONTENT -->
-    <main class="flex items-center justify-center flex-1 py-10">
-      <div
-        class="max-w-2xl text-center bg-white p-8 rounded-2xl shadow-lg space-y-4"
+    <!-- VIDEO BACKGROUND -->
+    <div class="relative w-full h-screen overflow-hidden">
+      <video
+        autoplay
+        loop
+        muted
+        playsinline
+        class="absolute top-0 left-0 w-full h-full object-cover"
       >
-        <h1 class="text-4xl font-bold text-gray-900">Welcome To BB VMS</h1>
-        <p class="text-lg text-gray-600">
-          Bima Bisalloy Visitor Management System (VMS) helps companies
-          record guest arrivals, manage visit schedules, and
-          monitor entry and exit activities in real time. This system aims to
-          improve security, efficiency, and guest experience during
-          visits.
-        </p>
-      </div>
-    </main>
+        <source src="/videos/bg.mp4" type="video/mp4" />
+        Browser Anda tidak mendukung video.
+      </video>
+
+      <!-- CONTENT -->
+      <main
+        class="relative flex items-center justify-center h-full bg-black/40"
+      >
+        <!-- Card Container -->
+        <div class="bg-white/30 backdrop-blur-md rounded-2xl p-8 shadow-xl">
+          <!-- Container tombol -->
+          <div class="flex flex-col space-y-6 items-center">
+            <!-- Check-In -->
+            <Link
+              :href="route('check-in.index')"
+              class="px-14 py-8 text-2xl font-bold text-white bg-blue-600/50 shadow-lg transition duration-300 hover:bg-blue-600 w-64 text-center"
+              style="border-radius: 0 9999px 9999px 0;"
+            >
+              Check-In
+            </Link>
+
+            <!-- Check-Out -->
+            <Link
+              :href="route('check-out.index')"
+              class="px-14 py-8 text-2xl font-bold text-white bg-red-600/50 shadow-lg transition duration-300 hover:bg-red-600 w-64 text-center"
+              style="border-radius: 0 9999px 9999px 0;"
+            >
+              Check-Out
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
   </GuestLayout>
 </template>

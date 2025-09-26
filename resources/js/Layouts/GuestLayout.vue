@@ -22,8 +22,8 @@ const showingNavigationDropdown = ref(false)
         <!-- Navigation Links (desktop) -->
         <div class="hidden sm:ms-10 sm:flex items-center space-x-8">
         <Link :href="route('welcome')" class="text-gray-700 hover:text-indigo-600">Home</Link>
-        <Link :href="route('check-in.index')" class="text-gray-700 hover:text-indigo-600">Check-In</Link>
-        <Link :href="route('check-out.index')" class="text-gray-700 hover:text-indigo-600">Check-Out</Link>
+        <!-- <Link :href="route('check-in.index')" class="text-gray-700 hover:text-indigo-600">Check-In</Link>
+        <Link :href="route('check-out.index')" class="text-gray-700 hover:text-indigo-600">Check-Out</Link> -->
         <Link :href="route('login')" class="text-gray-700 hover:text-indigo-600">Login</Link>
         </div>
 
@@ -59,8 +59,8 @@ const showingNavigationDropdown = ref(false)
       <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="sm:hidden">
         <div class="space-y-1 pb-3 pt-2">
           <Link :href="route('welcome')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Home</Link>
-          <Link :href="route('visitors.checkin.form')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Check-In</Link>
-          <Link :href="route('visitors.checkout.form')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Check-Out</Link>
+          <!-- <Link :href="route('visitors.checkin.form')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Check-In</Link>
+          <Link :href="route('visitors.checkout.form')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Check-Out</Link> -->
           <Link :href="route('login')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Login</Link>
         </div>
       </div>
