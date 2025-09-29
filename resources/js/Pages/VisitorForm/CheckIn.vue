@@ -1,22 +1,13 @@
 <script setup>
-import { ref, onBeforeUnmount, nextTick, watch, onMounted, computed } from "vue";
-import { Camera, RotateCcw, Printer, Home, ArrowLeft, LogIn, Check, ChevronDown } from "lucide-vue-next";
-import { Head, router } from "@inertiajs/vue3";
+import { ref, onBeforeUnmount, nextTick, watch, onMounted } from "vue";
+import { Camera, RotateCcw, Printer, Home, ArrowLeft } from "lucide-vue-next";
 import axios from "axios";
-
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxButton,
-  ComboboxOptions,
-  ComboboxOption,
-  TransitionRoot,
-} from "@headlessui/vue";
+import { Head, router } from "@inertiajs/vue3";
+import { LogIn } from "lucide-vue-next";
 
 const visitors = ref([]);
 const selectedVisitorsId = ref("");
 const isNewVisitor = ref(false);
-const query = ref("");
 
 const form = ref({
   referral_code: "",
@@ -26,7 +17,7 @@ const form = ref({
   position: "",
   email: "",
   phone: "",
-  photo: "",
+  photo: ""
 });
 
 const videoRef = ref(null);
@@ -47,7 +38,7 @@ const resetForm = () => {
     position: "",
     email: "",
     phone: "",
-    photo: "",
+    photo: ""
   };
   visitors.value = [];
   selectedVisitorsId.value = "";
@@ -60,7 +51,7 @@ const fetchVisitorsData = async () => {
   loading.value = true;
   try {
     const res = await axios.get(`/visitors/by-referral`, {
-      params: { referral_code: form.value.referral_code },
+      params: { referral_code: form.value.referral_code }
     });
     visitors.value = res.data.visitors || [];
     isNewVisitor.value = visitors.value.length === 0;
@@ -109,7 +100,7 @@ const startCamera = async () => {
   try {
     stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: "user" },
-      audio: false,
+      audio: false
     });
     cameraActive.value = true;
     await nextTick();
@@ -175,23 +166,26 @@ onBeforeUnmount(() => {
 
 /* ✅ Print Visitor Card + Auto Print */
 const printVisitorCard = (booking, visitorId) => {
-  if (!visitorId) {
-    alert("Visitor ID tidak ditemukan, tidak bisa print kartu.");
-    return;
-  }
-  const printWindow = window.open(
-    `/visitor/print?booking_id=${booking.id}&visitor_id=${visitorId}`,
-    "_blank",
-    "width=800,height=600"
-  );
+  // console.log(booking);
+  // console.log(visitorId);
 
-  if (printWindow) {
-    printWindow.onload = () => {
-      printWindow.print();
-      printWindow.onafterprint = () => printWindow.close();
-    };
-  }
+  window.location.href = `/visitor/print?booking_id=${booking.id}&visitor_id=${visitorId}`;
 };
+
+// const printVisitorCard = (booking, visitorId) => {
+//   const printWindow = window.open(
+//     `/visitor/print?booking_id=${booking.id}&visitor_id=${visitorId}`,
+//     "_blank",
+//     "width=800,height=600"
+//   );
+
+//   if (printWindow) {
+//     printWindow.onload = () => {
+//       printWindow.print();
+//       printWindow.onafterprint = () => printWindow.close();
+//     };
+//   }
+// };
 
 const checkIn = async () => {
   if (!form.value.photo) {
@@ -219,7 +213,9 @@ const checkIn = async () => {
   } catch (err) {
     if (err.response) {
       console.error("Error response:", err.response.data);
-      alert("Failed to check-in : " + (err.response.data.message || "Try again."));
+      alert(
+        "Failed to check-in : " + (err.response.data.message || "Try again.")
+      );
     } else {
       console.error(err);
       alert("Check-in failed, please try again.");
@@ -237,22 +233,13 @@ onMounted(() => {
     fetchVisitorsData();
   }
 });
-
-/* ✅ Filtered visitors untuk search */
-const filteredVisitors = computed(() =>
-  query.value === ""
-    ? visitors.value
-    : visitors.value.filter((v) =>
-        v.name.toLowerCase().includes(query.value.toLowerCase())
-      )
-);
 </script>
 
 <template>
   <Head title="Check-In" />
   <div class="flex flex-col min-h-screen bg-gray-50">
 
-    <!-- ✅ Header -->
+    <!-- ✅ Header dengan tombol Home & Back -->
     <div class="flex justify-between items-center p-4">
       <button
         @click="router.visit('/')"
@@ -260,6 +247,7 @@ const filteredVisitors = computed(() =>
       >
         <Home class="w-5 h-5" /> Home
       </button>
+
       <button
         @click="router.visit(route('check-in.index'))"
         class="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
@@ -271,10 +259,13 @@ const filteredVisitors = computed(() =>
     <!-- ✅ Konten utama -->
     <div class="flex items-start justify-center mt-2 flex-1 p-4">
       <div class="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8 mt-4">
+
+        <!-- ✅ Judul di dalam form -->
         <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">
           Visitor Check-In
         </h1>
 
+        <!-- ✅ Konten check-in -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <!-- Kamera -->
           <div class="flex flex-col items-center">
@@ -298,7 +289,9 @@ const filteredVisitors = computed(() =>
                 alt="Captured Photo"
                 class="object-cover w-full h-full"
               />
-              <span v-else class="text-gray-600">Click to activate the camera</span>
+              <span v-else class="text-gray-600">
+                Click to activate the camera
+              </span>
             </div>
 
             <div class="mt-4 flex gap-3" v-if="cameraActive || form.photo">
@@ -310,6 +303,7 @@ const filteredVisitors = computed(() =>
               >
                 <Camera class="w-8 h-8" />
               </button>
+
               <button
                 v-if="form.photo"
                 type="button"
@@ -323,7 +317,6 @@ const filteredVisitors = computed(() =>
 
           <!-- Form -->
           <div class="space-y-4">
-            <!-- Referral Code -->
             <div>
               <label class="block text-sm font-medium text-gray-700">
                 Referral Code
@@ -336,13 +329,10 @@ const filteredVisitors = computed(() =>
               />
             </div>
 
-            <!-- Visitor Name -->
             <div>
               <label class="block text-sm font-medium text-gray-700">
                 Visitor Name
               </label>
-
-              <!-- Jika New Visitor -->
               <input
                 v-if="isNewVisitor"
                 v-model="form.name"
@@ -350,60 +340,17 @@ const filteredVisitors = computed(() =>
                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Masukkan nama visitor baru"
               />
-
-              <!-- Jika pilih dari list -->
-              <Combobox v-else v-model="selectedVisitorsId" @update:modelValue="selectVisitors">
-                <div class="relative">
-                  <ComboboxInput
-                    class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-                    placeholder="Search visitor..."
-                    @change="query = $event.target.value"
-                    :displayValue="id => visitors.find(v => v.id == id)?.name || ''"
-                  />
-                  <ComboboxButton
-                    class="absolute inset-y-0 right-0 flex items-center pr-2"
-                    @click="query = ''"
-                  >
-                    <ChevronDown class="w-5 h-5 text-gray-400" />
-                  </ComboboxButton>
-
-                  <TransitionRoot
-                    leave="transition ease-in duration-100"
-                    leave-from="opacity-100"
-                    leave-to="opacity-0"
-                  >
-                    <ComboboxOptions
-                      class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white shadow-lg border focus:outline-none"
-                    >
-                      <div v-if="filteredVisitors.length === 0" class="p-2 text-gray-500">
-                        No visitors found
-                      </div>
-                      <ComboboxOption
-                        v-for="v in filteredVisitors"
-                        :key="v.id"
-                        :value="v.id"
-                        v-slot="{ selected, active }"
-                      >
-                        <div
-                          :class="[
-                            'cursor-pointer select-none relative p-2',
-                            active ? 'bg-blue-600 text-white' : 'text-gray-900'
-                          ]"
-                        >
-                          <span :class="[ 'block truncate', selected ? 'font-semibold' : 'font-normal']">
-                            {{ v.name }} - {{ v.company }}
-                          </span>
-                          <span v-if="selected" class="absolute inset-y-0 right-0 flex items-center pr-3 text-blue-600">
-                            <Check class="w-5 h-5" />
-                          </span>
-                        </div>
-                      </ComboboxOption>
-                    </ComboboxOptions>
-                  </TransitionRoot>
-                </div>
-              </Combobox>
-
-              <!-- Toggle add new visitor -->
+              <select
+                v-else
+                v-model="selectedVisitorsId"
+                @change="selectVisitors($event.target.value)"
+                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option disabled value="">-- Select Visitor --</option>
+                <option v-for="v in visitors" :key="v.id" :value="v.id">
+                  {{ v.name }} - {{ v.company }}
+                </option>
+              </select>
               <div class="flex items-center mt-2">
                 <input
                   id="isNewVisitor"
@@ -417,10 +364,11 @@ const filteredVisitors = computed(() =>
               </div>
             </div>
 
-            <!-- Company & Position -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700">Company</label>
+                <label class="block text-sm font-medium text-gray-700">
+                  Company
+                </label>
                 <input
                   v-model="form.company"
                   class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -428,7 +376,9 @@ const filteredVisitors = computed(() =>
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Position</label>
+                <label class="block text-sm font-medium text-gray-700">
+                  Position
+                </label>
                 <input
                   v-model="form.position"
                   class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -437,10 +387,11 @@ const filteredVisitors = computed(() =>
               </div>
             </div>
 
-            <!-- Email & Phone -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <label class="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
                 <input
                   v-model="form.email"
                   type="email"
@@ -449,7 +400,9 @@ const filteredVisitors = computed(() =>
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <label class="block text-sm font-medium text-gray-700">
+                  Phone Number
+                </label>
                 <input
                   v-model="form.phone"
                   type="tel"
@@ -459,7 +412,6 @@ const filteredVisitors = computed(() =>
               </div>
             </div>
 
-            <!-- Check-in button -->
             <div class="pt-4">
               <button
                 @click="checkIn"
@@ -474,7 +426,6 @@ const filteredVisitors = computed(() =>
               </button>
             </div>
 
-            <!-- Print button -->
             <div v-if="checkedInBooking" class="pt-4">
               <button
                 @click="printVisitorCard(checkedInBooking, form.visitors_id)"
@@ -486,7 +437,6 @@ const filteredVisitors = computed(() =>
             </div>
           </div>
         </div>
-
         <canvas ref="canvasRef" width="320" height="320" class="hidden"></canvas>
       </div>
     </div>

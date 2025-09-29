@@ -12,33 +12,33 @@ class RoomSeeder extends Seeder
         Room::create([
             'imgroom' => 'NAKULA.JPG',
             'name' => 'NAKULA',
-            'capacity' => 10,
+            'capacity' => 7,
             'facility' => 'Lantai 1',
-            'description' => 'Ruang rapat kecil untuk pertemuan internal.'
+            'description' => 'Ruang Rapat Umum'
         ]);
 
         Room::create([
             'imgroom' => 'SADEWA.JPG',
             'name' => 'SADEWA',
-            'capacity' => 20,
+            'capacity' => 7,
             'facility' => 'Lantai 1',
-            'description' => 'Ruang rapat sedang dengan proyektor.'
+            'description' => 'Ruang Rapat Umum'
         ]);
 
         Room::create([
             'imgroom' => 'NAKULA&SADEWA.JPG',
             'name' => 'NAKULA & SADEWA',
-            'capacity' => 50,
+            'capacity' => 14,
             'facility' => 'Lantai 1',
-            'description' => 'Ruang besar untuk seminar dan konferensi.'
+            'description' => 'Ruang Rapat Gabungan Umum'
         ]);
 
         Room::create([
             'imgroom' => 'BIMA.JPG',
             'name' => 'BIMA',
-            'capacity' => 50,
+            'capacity' => 8,
             'facility' => 'Lantai 2',
-            'description' => 'Ruang besar untuk seminar dan konferensi.'
+            'description' => 'Ruang Rapat Internal'
         ]);
     }
 }
