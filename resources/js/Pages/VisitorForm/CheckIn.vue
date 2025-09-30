@@ -168,6 +168,7 @@ onBeforeUnmount(() => {
 const printVisitorCard = (booking, visitorId) => {
   // console.log(booking);
   // console.log(visitorId);
+  // console.log(visitorId);
 
   window.location.href = `/visitor/print?booking_id=${booking.id}&visitor_id=${visitorId}`;
 };
