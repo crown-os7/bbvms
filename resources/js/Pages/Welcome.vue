@@ -29,7 +29,7 @@ import { Head, Link } from "@inertiajs/vue3";
           <div class="flex flex-col space-y-6 items-center">
             <!-- Check-In -->
             <Link
-              :href="route('check-in.index')"
+              :href="route('visitors.checkin.form')"
               class="px-14 py-8 text-2xl font-bold text-white bg-blue-600/50 shadow-lg transition duration-300 hover:bg-blue-600 w-64 text-center"
               style="border-radius: 0 9999px 9999px 0;"
             >
@@ -38,7 +38,7 @@ import { Head, Link } from "@inertiajs/vue3";
 
             <!-- Check-Out -->
             <Link
-              :href="route('check-out.index')"
+              :href="route('visitors.checkout.form')"
               class="px-14 py-8 text-2xl font-bold text-white bg-red-600/50 shadow-lg transition duration-300 hover:bg-red-600 w-64 text-center"
               style="border-radius: 0 9999px 9999px 0;"
             >

@@ -10,7 +10,7 @@ const selectedVisitorsId = ref("");
 const isNewVisitor = ref(false);
 
 const form = ref({
-  referral_code: "",
+  referral_code: "PUD364",
   visitors_id: null,
   name: "",
   company: "",
@@ -31,7 +31,7 @@ const checkedInBooking = ref(null);
 
 const resetForm = () => {
   form.value = {
-    referral_code: "",
+    referral_code: "PUD364",
     visitors_id: null,
     name: "",
     company: "",
@@ -228,7 +228,7 @@ const checkIn = async () => {
 /* ✅ Auto ambil referral code dari URL */
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
-  form.value.referral_code = params.get("ref") || "";
+  form.value.referral_code = params.get("ref") || "PUD364";
   if (form.value.referral_code) {
     fetchVisitorsData();
   }

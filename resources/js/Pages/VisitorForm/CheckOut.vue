@@ -6,7 +6,7 @@ import { LogOut, Home, ArrowLeft } from "lucide-vue-next";
 
 // ✅ form data
 const form = useForm({
-  referral_code: "",
+  referral_code: "PUD364",
   visitor_id: null,
 });
 
@@ -20,7 +20,7 @@ onMounted(() => {
   const params = new URLSearchParams(window.location.search);
   const refCode = params.get("ref");
   if (refCode) {
-    form.referral_code = refCode;
+    form.referral_code = refCode || "PUD364";
   }
 });
 
