@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { Head, usePage } from '@inertiajs/vue3'
+import { Head, usePage, router } from '@inertiajs/vue3'
 import QrcodeVue from 'qrcode.vue'
 import type { ImageSettings } from 'qrcode.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -49,8 +49,18 @@ onMounted(() => {
 })
 
 window.onafterprint = () => {
-  window.close()
+  // kalau tab dibuka dari window.open → bisa ditutup
+  if (window.opener) {
+    window.close()
+  } else {
+    // kalau tab utama → redirect ke check-in
+    router.visit("/check-in")
+  }
 }
+
+// window.onafterprint = () => {
+//   window.close()
+// }
 </script>
 
 <template>
