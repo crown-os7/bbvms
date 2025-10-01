@@ -6,8 +6,8 @@ import { LogOut, Home, ArrowLeft } from "lucide-vue-next";
 
 // ✅ form data
 const form = useForm({
-  referral_code: "PUD364",
-  visitor_id: null,
+  referral_code: "",
+  visitor_id: "",
 });
 
 const visitors = ref([]);
@@ -15,12 +15,20 @@ const message = ref(null);
 const messageType = ref("");
 const loadingVisitor = ref(false);
 
+// simpan referral code awal (dari query / default)
+let initialReferral = "";
+
 // ✅ ambil referral_code dari URL query param saat halaman pertama kali dibuka
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
   const refCode = params.get("ref");
+
   if (refCode) {
-    form.referral_code = refCode || "PUD364";
+    form.referral_code = refCode;
+    initialReferral = refCode;
+  } else {
+    form.referral_code = "PUD364"; // default referral
+    initialReferral = "PUD364";
   }
 });
 
@@ -28,8 +36,8 @@ onMounted(() => {
 watch(
   () => form.referral_code,
   async (val) => {
-    form.visitor_id = null;
     visitors.value = [];
+    form.visitor_id = "";
 
     if (!val) return;
 
@@ -48,11 +56,11 @@ watch(
   }
 );
 
-// ✅ reset form
+// ✅ reset form setelah submit sukses
 const resetForm = () => {
-  form.reset("referral_code");
-  form.visitor_id = null;
+  form.visitor_id = "";
   visitors.value = [];
+  form.referral_code = initialReferral; // referral tetap default awal
 };
 
 // ✅ submit checkout
